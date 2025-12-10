@@ -3,6 +3,13 @@ import { ArrowRight, Play } from "lucide-react";
 import heroImage from "@/assets/hero-jewelry.jpg";
 
 const HeroSection = () => {
+  const scrollToSection = (href: string) => {
+    const element = document.querySelector(href);
+    if (element) {
+      element.scrollIntoView({ behavior: "smooth" });
+    }
+  };
+
   return (
     <section className="relative min-h-screen flex items-center justify-center overflow-hidden">
       {/* Background Image with Overlay */}
@@ -18,7 +25,7 @@ const HeroSection = () => {
 
       {/* Decorative Elements */}
       <div className="absolute top-20 right-20 w-96 h-96 bg-primary/10 rounded-full blur-3xl animate-pulse-subtle" />
-      <div className="absolute bottom-20 left-20 w-64 h-64 bg-rose-gold/10 rounded-full blur-3xl animate-pulse-subtle delay-500" />
+      <div className="absolute bottom-20 left-20 w-64 h-64 bg-accent/10 rounded-full blur-3xl animate-pulse-subtle delay-500" />
 
       {/* Content */}
       <div className="relative z-10 container mx-auto px-6 py-32">
@@ -43,11 +50,21 @@ const HeroSection = () => {
 
           {/* CTAs */}
           <div className="flex flex-col sm:flex-row gap-4 opacity-0 animate-fade-up delay-300">
-            <Button variant="gold" size="xl" className="group">
+            <Button 
+              variant="gold" 
+              size="xl" 
+              className="group"
+              onClick={() => scrollToSection("#custom")}
+            >
               Design Your Piece
               <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
             </Button>
-            <Button variant="hero-outline" size="xl" className="group">
+            <Button 
+              variant="hero-outline" 
+              size="xl" 
+              className="group"
+              onClick={() => scrollToSection("#about")}
+            >
               <Play className="w-4 h-4" />
               Watch Our Story
             </Button>
@@ -78,10 +95,13 @@ const HeroSection = () => {
       </div>
 
       {/* Scroll Indicator */}
-      <div className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-0 animate-fade-in delay-500">
+      <button 
+        onClick={() => scrollToSection("#collections")}
+        className="absolute bottom-10 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 opacity-0 animate-fade-in delay-500 hover:opacity-80 transition-opacity cursor-pointer"
+      >
         <span className="text-cream/50 text-xs tracking-widest uppercase">Scroll</span>
         <div className="w-px h-12 bg-gradient-to-b from-primary to-transparent" />
-      </div>
+      </button>
     </section>
   );
 };

@@ -1,5 +1,8 @@
 import { useState } from "react";
-import { ArrowUpRight, Gem, Sparkles } from "lucide-react";
+import { ArrowUpRight, Gem, Sparkles, Heart, ShoppingBag } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { cn } from "@/lib/utils";
 
 // Jewelry imports
 import ringsImage from "@/assets/collection-rings.jpg";
@@ -18,27 +21,29 @@ import studsImage from "@/assets/diamond-studs.jpg";
 import pendantImage from "@/assets/diamond-pendant.jpg";
 
 const jewelryCategories = [
-  { id: 1, name: "Rings", image: ringsImage, count: "120+ Designs" },
-  { id: 2, name: "Necklaces", image: necklacesImage, count: "85+ Designs" },
-  { id: 3, name: "Bracelets", image: braceletsImage, count: "60+ Designs" },
-  { id: 4, name: "Earrings", image: earringsImage, count: "95+ Designs" },
-  { id: 5, name: "Chains", image: chainsImage, count: "70+ Designs" },
-  { id: 6, name: "Bangles", image: banglesImage, count: "55+ Designs" },
-  { id: 7, name: "Watches", image: watchesImage, count: "40+ Designs" },
+  { id: 101, name: "Rings", image: ringsImage, count: "120+ Designs", price: 1500 },
+  { id: 102, name: "Necklaces", image: necklacesImage, count: "85+ Designs", price: 1800 },
+  { id: 103, name: "Bracelets", image: braceletsImage, count: "60+ Designs", price: 1200 },
+  { id: 104, name: "Earrings", image: earringsImage, count: "95+ Designs", price: 950 },
+  { id: 105, name: "Chains", image: chainsImage, count: "70+ Designs", price: 800 },
+  { id: 106, name: "Bangles", image: banglesImage, count: "55+ Designs", price: 1100 },
+  { id: 107, name: "Watches", image: watchesImage, count: "40+ Designs", price: 3500 },
 ];
 
 const diamondCategories = [
-  { id: 1, name: "Loose Diamonds", image: looseDiamondImage, count: "500+ Stones" },
-  { id: 2, name: "Engagement Rings", image: engagementImage, count: "200+ Designs" },
-  { id: 3, name: "Tennis Bracelets", image: tennisImage, count: "45+ Designs" },
-  { id: 4, name: "Diamond Studs", image: studsImage, count: "80+ Designs" },
-  { id: 5, name: "Pendants", image: pendantImage, count: "65+ Designs" },
+  { id: 201, name: "Loose Diamonds", image: looseDiamondImage, count: "500+ Stones", price: 5000 },
+  { id: 202, name: "Engagement Rings", image: engagementImage, count: "200+ Designs", price: 4500 },
+  { id: 203, name: "Tennis Bracelets", image: tennisImage, count: "45+ Designs", price: 8000 },
+  { id: 204, name: "Diamond Studs", image: studsImage, count: "80+ Designs", price: 2500 },
+  { id: 205, name: "Pendants", image: pendantImage, count: "65+ Designs", price: 3000 },
 ];
 
 type TabType = "jewelry" | "diamonds";
 
 const CategorySection = () => {
   const [activeTab, setActiveTab] = useState<TabType>("jewelry");
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
 
   const categories = activeTab === "jewelry" ? jewelryCategories : diamondCategories;
 
@@ -86,9 +91,8 @@ const CategorySection = () => {
         {/* Categories Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 gap-4 md:gap-6">
           {categories.map((category, index) => (
-            <a
+            <div
               key={category.id}
-              href="#"
               className="group relative overflow-hidden rounded-2xl aspect-square hover-lift animate-fade-up"
               style={{ animationDelay: `${index * 50}ms` }}
             >
@@ -99,6 +103,40 @@ const CategorySection = () => {
                 className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
               />
 
+              {/* Wishlist Button */}
+              <button
+                onClick={() => toggleWishlist({
+                  id: category.id,
+                  name: category.name,
+                  price: category.price,
+                  image: category.image,
+                  category: activeTab === "jewelry" ? "Jewelry" : "Diamonds",
+                })}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background z-10"
+              >
+                <Heart 
+                  className={cn(
+                    "w-4 h-4 transition-colors",
+                    isInWishlist(category.id) 
+                      ? "fill-accent text-accent" 
+                      : "text-foreground hover:text-accent"
+                  )} 
+                />
+              </button>
+
+              {/* Add to Cart Button */}
+              <button
+                onClick={() => addToCart({
+                  id: category.id,
+                  name: category.name,
+                  price: category.price,
+                  image: category.image,
+                })}
+                className="absolute top-3 left-3 w-8 h-8 rounded-full bg-primary flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-primary/90 z-10"
+              >
+                <ShoppingBag className="w-4 h-4 text-primary-foreground" />
+              </button>
+
               {/* Gradient Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-secondary via-secondary/40 to-transparent opacity-80 group-hover:opacity-90 transition-opacity duration-300" />
 
@@ -107,8 +145,11 @@ const CategorySection = () => {
                 <h3 className="text-cream text-lg md:text-xl font-heading font-semibold mb-1 group-hover:text-primary transition-colors duration-300">
                   {category.name}
                 </h3>
-                <p className="text-cream/60 text-sm mb-2">
+                <p className="text-cream/60 text-sm mb-1">
                   {category.count}
+                </p>
+                <p className="text-primary text-sm font-semibold mb-2">
+                  From ${category.price.toLocaleString()}
                 </p>
                 <div className="flex items-center gap-1 text-primary text-sm font-medium opacity-0 translate-y-2 group-hover:opacity-100 group-hover:translate-y-0 transition-all duration-300">
                   Explore
@@ -118,7 +159,7 @@ const CategorySection = () => {
 
               {/* Border Effect */}
               <div className="absolute inset-0 border-2 border-primary/0 group-hover:border-primary/40 rounded-2xl transition-colors duration-500" />
-            </a>
+            </div>
           ))}
         </div>
 

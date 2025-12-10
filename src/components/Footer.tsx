@@ -1,5 +1,7 @@
+import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { toast } from "@/hooks/use-toast";
 import { 
   Instagram, 
   Facebook, 
@@ -13,26 +15,61 @@ import {
 } from "lucide-react";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
   const currentYear = new Date().getFullYear();
+
+  const handleSubscribe = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email.trim()) {
+      toast({
+        title: "Email Required",
+        description: "Please enter your email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast({
+        title: "Invalid Email",
+        description: "Please enter a valid email address.",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "Successfully Subscribed!",
+      description: "Welcome to the OWN-it inner circle. Check your email for exclusive offers.",
+    });
+    setEmail("");
+  };
+
+  const scrollToSection = (href: string) => {
+    if (href.startsWith("#")) {
+      const element = document.querySelector(href);
+      if (element) {
+        element.scrollIntoView({ behavior: "smooth" });
+      }
+    }
+  };
 
   const footerLinks = {
     shop: [
-      { name: "All Collections", href: "#" },
-      { name: "Diamond Rings", href: "#" },
-      { name: "Necklaces", href: "#" },
-      { name: "Bracelets", href: "#" },
-      { name: "Earrings", href: "#" },
+      { name: "All Collections", href: "#collections" },
+      { name: "Diamond Rings", href: "#categories" },
+      { name: "Necklaces", href: "#categories" },
+      { name: "Bracelets", href: "#categories" },
+      { name: "Earrings", href: "#categories" },
     ],
     services: [
-      { name: "Custom Design", href: "#" },
-      { name: "Diamond Education", href: "#" },
+      { name: "Custom Design", href: "#custom" },
+      { name: "Diamond Education", href: "#about" },
       { name: "Ring Sizer", href: "#" },
       { name: "Gift Cards", href: "#" },
       { name: "Financing", href: "#" },
     ],
     company: [
-      { name: "Our Story", href: "#" },
-      { name: "Craftsmanship", href: "#" },
+      { name: "Our Story", href: "#about" },
+      { name: "Craftsmanship", href: "#about" },
       { name: "Sustainability", href: "#" },
       { name: "Careers", href: "#" },
       { name: "Press", href: "#" },
@@ -47,7 +84,7 @@ const Footer = () => {
   };
 
   return (
-    <footer className="bg-secondary pt-20 pb-8">
+    <footer id="about" className="bg-secondary pt-20 pb-8">
       <div className="container mx-auto px-6">
         {/* Newsletter Section */}
         <div className="glass-dark rounded-2xl p-8 md:p-12 mb-16 luxury-border">
@@ -60,17 +97,19 @@ const Footer = () => {
                 Subscribe for exclusive offers, new arrivals, and bespoke jewelry insights.
               </p>
             </div>
-            <div className="flex gap-3">
+            <form onSubmit={handleSubscribe} className="flex gap-3">
               <Input
                 type="email"
                 placeholder="Enter your email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
                 className="bg-secondary/50 border-cream/20 text-cream placeholder:text-cream/40 focus:border-primary"
               />
-              <Button variant="gold" className="shrink-0">
+              <Button type="submit" variant="gold" className="shrink-0">
                 Subscribe
                 <ArrowRight className="w-4 h-4" />
               </Button>
-            </div>
+            </form>
           </div>
         </div>
 
@@ -88,16 +127,36 @@ const Footer = () => {
               Every piece is a masterpiece of love and artistry.
             </p>
             <div className="flex gap-4">
-              <a href="#" className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://instagram.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Instagram className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://facebook.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Facebook className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://twitter.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Twitter className="w-5 h-5" />
               </a>
-              <a href="#" className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300">
+              <a 
+                href="https://youtube.com" 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                className="w-10 h-10 rounded-full bg-cream/10 flex items-center justify-center text-cream/60 hover:bg-primary hover:text-primary-foreground transition-all duration-300"
+              >
                 <Youtube className="w-5 h-5" />
               </a>
             </div>
@@ -111,9 +170,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.shop.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/60 text-sm hover:text-primary transition-colors duration-300">
+                  <button 
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-cream/60 text-sm hover:text-primary transition-colors duration-300"
+                  >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -126,9 +188,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.services.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/60 text-sm hover:text-primary transition-colors duration-300">
+                  <button 
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-cream/60 text-sm hover:text-primary transition-colors duration-300"
+                  >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -141,9 +206,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.company.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/60 text-sm hover:text-primary transition-colors duration-300">
+                  <button 
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-cream/60 text-sm hover:text-primary transition-colors duration-300"
+                  >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -156,9 +224,12 @@ const Footer = () => {
             <ul className="space-y-3">
               {footerLinks.support.map((link) => (
                 <li key={link.name}>
-                  <a href={link.href} className="text-cream/60 text-sm hover:text-primary transition-colors duration-300">
+                  <button 
+                    onClick={() => scrollToSection(link.href)}
+                    className="text-cream/60 text-sm hover:text-primary transition-colors duration-300"
+                  >
                     {link.name}
-                  </a>
+                  </button>
                 </li>
               ))}
             </ul>
@@ -167,7 +238,12 @@ const Footer = () => {
 
         {/* Contact Info */}
         <div className="flex flex-wrap justify-center gap-8 mb-12 py-8 border-t border-b border-cream/10">
-          <a href="#" className="flex items-center gap-2 text-cream/60 hover:text-primary transition-colors duration-300">
+          <a 
+            href="https://maps.google.com/?q=New+York,+NY" 
+            target="_blank" 
+            rel="noopener noreferrer"
+            className="flex items-center gap-2 text-cream/60 hover:text-primary transition-colors duration-300"
+          >
             <MapPin className="w-4 h-4" />
             <span className="text-sm">New York, NY</span>
           </a>
@@ -187,12 +263,12 @@ const Footer = () => {
             © {currentYear} OWN-it Jewelry. All rights reserved.
           </p>
           <div className="flex items-center gap-4">
-            <a href="#" className="text-cream/40 text-sm hover:text-cream transition-colors">
+            <button className="text-cream/40 text-sm hover:text-cream transition-colors">
               Privacy Policy
-            </a>
-            <a href="#" className="text-cream/40 text-sm hover:text-cream transition-colors">
+            </button>
+            <button className="text-cream/40 text-sm hover:text-cream transition-colors">
               Terms of Service
-            </a>
+            </button>
           </div>
           <div className="flex items-center gap-2 text-cream/40">
             <CreditCard className="w-5 h-5" />
