@@ -1,4 +1,7 @@
-import { ArrowUpRight } from "lucide-react";
+import { ArrowUpRight, Heart, ShoppingBag } from "lucide-react";
+import { useCart } from "@/contexts/CartContext";
+import { useWishlist } from "@/contexts/WishlistContext";
+import { cn } from "@/lib/utils";
 import ringsImage from "@/assets/collection-rings.jpg";
 import necklacesImage from "@/assets/collection-necklaces.jpg";
 import braceletsImage from "@/assets/collection-bracelets.jpg";
@@ -10,32 +13,43 @@ const collections = [
     name: "Diamond Rings",
     description: "Timeless elegance for every moment",
     image: ringsImage,
+    price: 2500,
     startingPrice: "$2,500",
+    category: "Rings",
   },
   {
     id: 2,
     name: "Necklaces",
     description: "Graceful designs that captivate",
     image: necklacesImage,
+    price: 1800,
     startingPrice: "$1,800",
+    category: "Necklaces",
   },
   {
     id: 3,
     name: "Bracelets",
     description: "Delicate beauty for your wrist",
     image: braceletsImage,
+    price: 1200,
     startingPrice: "$1,200",
+    category: "Bracelets",
   },
   {
     id: 4,
     name: "Earrings",
     description: "Sparkle with every turn",
     image: earringsImage,
+    price: 950,
     startingPrice: "$950",
+    category: "Earrings",
   },
 ];
 
 const FeaturedCollections = () => {
+  const { addToCart } = useCart();
+  const { toggleWishlist, isInWishlist } = useWishlist();
+
   return (
     <section id="collections" className="py-24 md:py-32 bg-background">
       <div className="container mx-auto px-6">
@@ -54,9 +68,8 @@ const FeaturedCollections = () => {
         {/* Collections Grid */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
           {collections.map((collection, index) => (
-            <a
+            <div
               key={collection.id}
-              href="#"
               className="group relative overflow-hidden rounded-2xl hover-lift"
               style={{ animationDelay: `${index * 100}ms` }}
             >
@@ -68,6 +81,27 @@ const FeaturedCollections = () => {
                   className="w-full h-full object-cover transition-transform duration-700 group-hover:scale-110"
                 />
               </div>
+
+              {/* Wishlist Button */}
+              <button
+                onClick={() => toggleWishlist({
+                  id: collection.id,
+                  name: collection.name,
+                  price: collection.price,
+                  image: collection.image,
+                  category: collection.category,
+                })}
+                className="absolute top-4 right-4 w-10 h-10 rounded-full bg-background/80 backdrop-blur-sm flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:bg-background z-10"
+              >
+                <Heart 
+                  className={cn(
+                    "w-5 h-5 transition-colors",
+                    isInWishlist(collection.id) 
+                      ? "fill-accent text-accent" 
+                      : "text-foreground hover:text-accent"
+                  )} 
+                />
+              </button>
 
               {/* Glassmorphism Overlay */}
               <div className="absolute inset-0 bg-gradient-to-t from-secondary/90 via-secondary/20 to-transparent" />
@@ -84,9 +118,22 @@ const FeaturedCollections = () => {
                   <p className="text-cream/70 text-sm mb-3">
                     {collection.description}
                   </p>
-                  <div className="flex items-center gap-2 text-primary text-sm font-medium">
-                    Explore Collection
-                    <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                  <div className="flex items-center justify-between">
+                    <a href="#" className="flex items-center gap-2 text-primary text-sm font-medium hover:underline">
+                      Explore Collection
+                      <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
+                    </a>
+                    <button
+                      onClick={() => addToCart({
+                        id: collection.id,
+                        name: collection.name,
+                        price: collection.price,
+                        image: collection.image,
+                      })}
+                      className="w-9 h-9 rounded-full bg-primary flex items-center justify-center hover:bg-primary/90 transition-colors"
+                    >
+                      <ShoppingBag className="w-4 h-4 text-primary-foreground" />
+                    </button>
                   </div>
                 </div>
               </div>
@@ -103,14 +150,14 @@ const FeaturedCollections = () => {
 
               {/* Decorative Border */}
               <div className="absolute inset-0 border border-primary/0 group-hover:border-primary/30 rounded-2xl transition-colors duration-500" />
-            </a>
+            </div>
           ))}
         </div>
 
         {/* View All Link */}
         <div className="text-center mt-12">
           <a
-            href="#"
+            href="#categories"
             className="inline-flex items-center gap-2 text-foreground font-medium hover:text-primary transition-colors duration-300 group"
           >
             View All Collections

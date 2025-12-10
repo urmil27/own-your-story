@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
-import { ArrowRight, Sparkles, Gem, Pencil, Eye } from "lucide-react";
+import { ArrowRight, Sparkles, Gem, Pencil, Eye, MessageCircle } from "lucide-react";
+import { toast } from "@/hooks/use-toast";
 
 const steps = [
   {
@@ -29,6 +30,18 @@ const steps = [
 ];
 
 const CustomDesignSection = () => {
+  const handleStartJourney = () => {
+    toast({
+      title: "Custom Design Studio",
+      description: "Our custom design tool is coming soon! Contact us to discuss your dream piece.",
+    });
+  };
+
+  const handleBookConsultation = () => {
+    const message = encodeURIComponent("Hi! I'm interested in creating a custom jewelry piece. Can we schedule a consultation?");
+    window.open(`https://wa.me/18001234567?text=${message}`, "_blank");
+  };
+
   return (
     <section id="custom" className="py-24 md:py-32 bg-secondary relative overflow-hidden">
       {/* Background Decorations */}
@@ -77,10 +90,16 @@ const CustomDesignSection = () => {
               </div>
             </div>
 
-            <Button variant="gold" size="xl" className="group">
-              Start Your Custom Journey
-              <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
-            </Button>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <Button variant="gold" size="xl" className="group" onClick={handleStartJourney}>
+                Start Your Custom Journey
+                <ArrowRight className="w-5 h-5 group-hover:translate-x-1 transition-transform" />
+              </Button>
+              <Button variant="gold-outline" size="lg" className="group" onClick={handleBookConsultation}>
+                <MessageCircle className="w-4 h-4" />
+                Book Consultation
+              </Button>
+            </div>
           </div>
 
           {/* Right - Steps */}
