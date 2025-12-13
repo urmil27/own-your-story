@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -7,6 +8,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { User, LogIn, UserPlus, Package, Heart, Settings, LogOut, MapPin } from "lucide-react";
+import { useWishlist } from "@/contexts/WishlistContext";
 
 interface AccountDropdownProps {
   isAuthenticated?: boolean;
@@ -14,6 +16,8 @@ interface AccountDropdownProps {
 }
 
 const AccountDropdown = ({ isAuthenticated = false, userName }: AccountDropdownProps) => {
+  const { setIsWishlistOpen } = useWishlist();
+
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,7 +36,7 @@ const AccountDropdown = ({ isAuthenticated = false, userName }: AccountDropdownP
               <Package className="w-4 h-4 mr-2" />
               My Orders
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
+            <DropdownMenuItem className="cursor-pointer" onClick={() => setIsWishlistOpen(true)}>
               <Heart className="w-4 h-4 mr-2" />
               Wishlist
             </DropdownMenuItem>
@@ -54,13 +58,17 @@ const AccountDropdown = ({ isAuthenticated = false, userName }: AccountDropdownP
           <>
             <DropdownMenuLabel className="font-heading">Account</DropdownMenuLabel>
             <DropdownMenuSeparator />
-            <DropdownMenuItem className="cursor-pointer">
-              <LogIn className="w-4 h-4 mr-2" />
-              Sign In
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link to="/auth">
+                <LogIn className="w-4 h-4 mr-2" />
+                Sign In
+              </Link>
             </DropdownMenuItem>
-            <DropdownMenuItem className="cursor-pointer">
-              <UserPlus className="w-4 h-4 mr-2" />
-              Create Account
+            <DropdownMenuItem asChild className="cursor-pointer">
+              <Link to="/auth">
+                <UserPlus className="w-4 h-4 mr-2" />
+                Create Account
+              </Link>
             </DropdownMenuItem>
             <DropdownMenuSeparator />
             <DropdownMenuItem className="cursor-pointer text-muted-foreground">

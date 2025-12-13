@@ -166,7 +166,7 @@ const CategorySection = () => {
         {/* View All Link */}
         <div className="text-center mt-12">
           <a
-            href="#"
+            href={`/products?category=${activeTab}`}
             className="inline-flex items-center gap-2 px-8 py-3 bg-primary/10 border border-primary/30 text-primary rounded-full font-medium hover:bg-primary hover:text-secondary transition-all duration-300 group"
           >
             View All {activeTab === "jewelry" ? "Jewelry" : "Diamonds"}
