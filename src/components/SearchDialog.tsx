@@ -1,4 +1,5 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import {
   Dialog,
   DialogContent,
@@ -6,7 +7,8 @@ import {
   DialogTitle,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { Search, TrendingUp } from "lucide-react";
+import { Search, TrendingUp, ArrowRight, Star } from "lucide-react";
+import { searchProducts, Product } from "@/data/products";
 
 interface SearchDialogProps {
   isOpen: boolean;
@@ -24,6 +26,35 @@ const popularSearches = [
 
 const SearchDialog = ({ isOpen, onClose }: SearchDialogProps) => {
   const [query, setQuery] = useState("");
+  const [results, setResults] = useState<Product[]>([]);
+  const navigate = useNavigate();
+
+  useEffect(() => {
+    if (query.length >= 2) {
+      const searchResults = searchProducts(query);
+      setResults(searchResults.slice(0, 6));
+    } else {
+      setResults([]);
+    }
+  }, [query]);
+
+  const handleSearch = (searchTerm: string) => {
+    onClose();
+    navigate(`/products?q=${encodeURIComponent(searchTerm)}`);
+    setQuery("");
+  };
+
+  const handleProductClick = (productId: number) => {
+    onClose();
+    navigate(`/product/${productId}`);
+    setQuery("");
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent) => {
+    if (e.key === "Enter" && query.length >= 2) {
+      handleSearch(query);
+    }
+  };
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
@@ -39,38 +70,72 @@ const SearchDialog = ({ isOpen, onClose }: SearchDialogProps) => {
               placeholder="Search for jewelry, diamonds, collections..."
               value={query}
               onChange={(e) => setQuery(e.target.value)}
+              onKeyDown={handleKeyDown}
               className="pl-10 h-12 bg-muted/30 border-border focus:border-primary"
               autoFocus
             />
           </div>
 
-          <div className="mt-6">
-            <div className="flex items-center gap-2 text-muted-foreground mb-3">
-              <TrendingUp className="w-4 h-4" />
-              <span className="text-sm font-medium">Popular Searches</span>
-            </div>
-            <div className="flex flex-wrap gap-2">
-              {popularSearches.map((search) => (
-                <button
-                  key={search}
-                  onClick={() => setQuery(search)}
-                  className="px-4 py-2 bg-muted/50 hover:bg-primary/10 hover:text-primary rounded-full text-sm transition-colors duration-300"
-                >
-                  {search}
-                </button>
-              ))}
-            </div>
-          </div>
-
-          {query && (
-            <div className="mt-6 pt-4 border-t border-border">
-              <p className="text-muted-foreground text-sm">
-                Showing results for "{query}"
+          {results.length > 0 ? (
+            <div className="mt-6">
+              <p className="text-sm text-muted-foreground mb-3">
+                Found {results.length} results for "{query}"
               </p>
-              <div className="mt-4 text-center py-8">
-                <p className="text-muted-foreground">
-                  Search functionality will be available soon
-                </p>
+              <div className="space-y-2">
+                {results.map((product) => (
+                  <button
+                    key={product.id}
+                    onClick={() => handleProductClick(product.id)}
+                    className="w-full flex items-center gap-4 p-3 rounded-lg hover:bg-muted transition-colors text-left"
+                  >
+                    <div className="w-12 h-12 rounded-lg overflow-hidden bg-muted shrink-0">
+                      <img
+                        src={product.image}
+                        alt={product.name}
+                        className="w-full h-full object-cover"
+                      />
+                    </div>
+                    <div className="flex-1 min-w-0">
+                      <h4 className="font-medium text-foreground line-clamp-1">
+                        {product.name}
+                      </h4>
+                      <div className="flex items-center gap-2 text-sm">
+                        <span className="text-primary font-semibold">
+                          ${product.price.toLocaleString()}
+                        </span>
+                        <span className="flex items-center gap-1 text-muted-foreground">
+                          <Star className="w-3 h-3 fill-primary text-primary" />
+                          {product.rating}
+                        </span>
+                      </div>
+                    </div>
+                    <ArrowRight className="w-4 h-4 text-muted-foreground" />
+                  </button>
+                ))}
+              </div>
+              <button
+                onClick={() => handleSearch(query)}
+                className="w-full mt-4 py-3 text-center text-primary font-medium hover:underline"
+              >
+                View all results for "{query}"
+              </button>
+            </div>
+          ) : (
+            <div className="mt-6">
+              <div className="flex items-center gap-2 text-muted-foreground mb-3">
+                <TrendingUp className="w-4 h-4" />
+                <span className="text-sm font-medium">Popular Searches</span>
+              </div>
+              <div className="flex flex-wrap gap-2">
+                {popularSearches.map((search) => (
+                  <button
+                    key={search}
+                    onClick={() => handleSearch(search)}
+                    className="px-4 py-2 bg-muted/50 hover:bg-primary/10 hover:text-primary rounded-full text-sm transition-colors duration-300"
+                  >
+                    {search}
+                  </button>
+                ))}
               </div>
             </div>
           )}

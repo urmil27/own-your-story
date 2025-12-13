@@ -119,7 +119,7 @@ const FeaturedCollections = () => {
                     {collection.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <a href="#" className="flex items-center gap-2 text-primary text-sm font-medium hover:underline">
+                    <a href={`/products?category=jewelry&subcategory=${collection.category.toLowerCase()}`} className="flex items-center gap-2 text-primary text-sm font-medium hover:underline">
                       Explore Collection
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
                     </a>
