@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link, useNavigate, useLocation } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { toast } from "@/hooks/use-toast";
@@ -17,6 +18,8 @@ import {
 const Footer = () => {
   const [email, setEmail] = useState("");
   const currentYear = new Date().getFullYear();
+  const navigate = useNavigate();
+  const location = useLocation();
 
   const handleSubscribe = (e: React.FormEvent) => {
     e.preventDefault();
@@ -45,6 +48,11 @@ const Footer = () => {
 
   const scrollToSection = (href: string) => {
     if (href.startsWith("#")) {
+      // If not on home page, navigate to home first
+      if (location.pathname !== "/") {
+        navigate("/" + href);
+        return;
+      }
       const element = document.querySelector(href);
       if (element) {
         element.scrollIntoView({ behavior: "smooth" });
@@ -117,11 +125,11 @@ const Footer = () => {
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-8 mb-16">
           {/* Brand Column */}
           <div className="col-span-2">
-            <a href="/" className="inline-block mb-6">
+            <Link to="/" className="inline-block mb-6">
               <span className="text-3xl font-heading font-bold text-cream tracking-wider">
                 OWN<span className="text-primary">-it</span>
               </span>
-            </a>
+            </Link>
             <p className="text-cream/60 text-sm mb-6 max-w-xs">
               Crafting timeless jewelry that tells your unique story. 
               Every piece is a masterpiece of love and artistry.

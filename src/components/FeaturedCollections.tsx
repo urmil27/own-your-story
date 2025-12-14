@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom";
 import { ArrowUpRight, Heart, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -119,10 +120,10 @@ const FeaturedCollections = () => {
                     {collection.description}
                   </p>
                   <div className="flex items-center justify-between">
-                    <a href={`/products?category=jewelry&subcategory=${collection.category.toLowerCase()}`} className="flex items-center gap-2 text-primary text-sm font-medium hover:underline">
+                    <Link to={`/products?category=jewelry&subcategory=${collection.category.toLowerCase()}`} className="flex items-center gap-2 text-primary text-sm font-medium hover:underline">
                       Explore Collection
                       <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-                    </a>
+                    </Link>
                     <button
                       onClick={() => addToCart({
                         id: collection.id,

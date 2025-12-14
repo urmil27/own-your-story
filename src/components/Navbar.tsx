@@ -1,4 +1,5 @@
 import { useState, useEffect } from "react";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { Menu, X, Search, Heart, ShoppingBag } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { cn } from "@/lib/utils";
@@ -13,6 +14,8 @@ const Navbar = () => {
   const [isSearchOpen, setIsSearchOpen] = useState(false);
   const { cartCount, setIsCartOpen } = useCart();
   const { wishlistCount, setIsWishlistOpen } = useWishlist();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   useEffect(() => {
     const handleScroll = () => {
@@ -31,6 +34,13 @@ const Navbar = () => {
 
   const handleNavClick = (href: string) => {
     setIsMobileMenuOpen(false);
+    
+    // If not on home page, navigate to home first then scroll
+    if (location.pathname !== "/") {
+      navigate("/" + href);
+      return;
+    }
+    
     const element = document.querySelector(href);
     if (element) {
       element.scrollIntoView({ behavior: "smooth" });
@@ -50,11 +60,11 @@ const Navbar = () => {
         <div className="container mx-auto px-6">
           <nav className="flex items-center justify-between">
             {/* Logo */}
-            <a href="/" className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-2 group">
               <span className="text-2xl md:text-3xl font-heading font-bold text-cream tracking-wider">
                 OWN<span className="text-primary">-it</span>
               </span>
-            </a>
+            </Link>
 
             {/* Desktop Navigation */}
             <ul className="hidden lg:flex items-center gap-8">
