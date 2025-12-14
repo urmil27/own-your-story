@@ -1,10 +1,17 @@
+import { useNavigate } from "react-router-dom";
 import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet";
 import { Button } from "@/components/ui/button";
 import { useCart } from "@/contexts/CartContext";
 import { Minus, Plus, Trash2, ShoppingBag } from "lucide-react";
 
 const CartDrawer = () => {
+  const navigate = useNavigate();
   const { cartItems, isCartOpen, setIsCartOpen, removeFromCart, updateQuantity, cartTotal, clearCart } = useCart();
+
+  const handleCheckout = () => {
+    setIsCartOpen(false);
+    navigate("/checkout");
+  };
 
   return (
     <Sheet open={isCartOpen} onOpenChange={setIsCartOpen}>
@@ -83,7 +90,7 @@ const CartDrawer = () => {
                 <p className="text-xs text-muted-foreground">
                   Shipping and taxes calculated at checkout
                 </p>
-                <Button variant="gold" className="w-full" size="lg">
+                <Button variant="gold" className="w-full" size="lg" onClick={handleCheckout}>
                   Proceed to Checkout
                 </Button>
                 <div className="flex gap-2">

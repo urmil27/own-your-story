@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Link } from "react-router-dom";
 import { ArrowUpRight, Gem, Sparkles, Heart, ShoppingBag } from "lucide-react";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
@@ -165,13 +166,13 @@ const CategorySection = () => {
 
         {/* View All Link */}
         <div className="text-center mt-12">
-          <a
-            href={`/products?category=${activeTab}`}
+          <Link
+            to={`/products?category=${activeTab}`}
             className="inline-flex items-center gap-2 px-8 py-3 bg-primary/10 border border-primary/30 text-primary rounded-full font-medium hover:bg-primary hover:text-secondary transition-all duration-300 group"
           >
             View All {activeTab === "jewelry" ? "Jewelry" : "Diamonds"}
             <ArrowUpRight className="w-4 h-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform" />
-          </a>
+          </Link>
         </div>
       </div>
     </section>
