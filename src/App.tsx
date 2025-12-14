@@ -23,9 +23,9 @@ const App = () => (
         <WishlistProvider>
           <Toaster />
           <Sonner />
-          <CartDrawer />
-          <WishlistDrawer />
           <BrowserRouter>
+            <CartDrawer />
+            <WishlistDrawer />
             <Routes>
               <Route path="/" element={<Index />} />
               <Route path="/auth" element={<Auth />} />
