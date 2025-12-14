@@ -25,6 +25,11 @@ const Navbar = () => {
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
+  // Close mobile menu on route change
+  useEffect(() => {
+    setIsMobileMenuOpen(false);
+  }, [location.pathname]);
+
   const navLinks = [
     { name: "Collections", href: "#collections" },
     { name: "Categories", href: "#categories" },
@@ -58,9 +63,9 @@ const Navbar = () => {
         )}
       >
         <div className="container mx-auto px-6">
-          <nav className="flex items-center justify-between">
+          <nav className="flex items-center justify-between" aria-label="Main navigation">
             {/* Logo */}
-            <Link to="/" className="flex items-center gap-2 group">
+            <Link to="/" className="flex items-center gap-2 group cursor-pointer">
               <span className="text-2xl md:text-3xl font-heading font-bold text-cream tracking-wider">
                 OWN<span className="text-primary">-it</span>
               </span>
@@ -72,25 +77,35 @@ const Navbar = () => {
                 <li key={link.name}>
                   <button
                     onClick={() => handleNavClick(link.href)}
-                    className="text-cream/90 hover:text-primary font-medium text-sm tracking-wide transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full"
+                    className="text-cream/90 hover:text-primary font-medium text-sm tracking-wide transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full cursor-pointer"
                   >
                     {link.name}
                   </button>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/products?category=jewelry"
+                  className="text-cream/90 hover:text-primary font-medium text-sm tracking-wide transition-colors duration-300 relative after:absolute after:bottom-0 after:left-0 after:w-0 after:h-0.5 after:bg-primary after:transition-all after:duration-300 hover:after:w-full cursor-pointer"
+                >
+                  Shop
+                </Link>
+              </li>
             </ul>
 
             {/* Right Icons */}
             <div className="flex items-center gap-4">
               <button 
                 onClick={() => setIsSearchOpen(true)}
-                className="text-cream/90 hover:text-primary transition-colors duration-300 hidden md:block"
+                className="text-cream/90 hover:text-primary transition-colors duration-300 hidden md:block cursor-pointer"
+                aria-label="Open search"
               >
                 <Search className="w-5 h-5" />
               </button>
               <button 
                 onClick={() => setIsWishlistOpen(true)}
-                className="text-cream/90 hover:text-primary transition-colors duration-300 hidden md:block relative"
+                className="text-cream/90 hover:text-primary transition-colors duration-300 hidden md:block relative cursor-pointer"
+                aria-label={`Wishlist with ${wishlistCount} items`}
               >
                 <Heart className={cn("w-5 h-5", wishlistCount > 0 && "fill-accent text-accent")} />
                 {wishlistCount > 0 && (
@@ -101,7 +116,8 @@ const Navbar = () => {
               </button>
               <button 
                 onClick={() => setIsCartOpen(true)}
-                className="text-cream/90 hover:text-primary transition-colors duration-300 relative"
+                className="text-cream/90 hover:text-primary transition-colors duration-300 relative cursor-pointer"
+                aria-label={`Cart with ${cartCount} items`}
               >
                 <ShoppingBag className="w-5 h-5" />
                 {cartCount > 0 && (
@@ -114,8 +130,10 @@ const Navbar = () => {
 
               {/* Mobile Menu Button */}
               <button
-                className="lg:hidden text-cream/90 hover:text-primary transition-colors duration-300"
+                className="lg:hidden text-cream/90 hover:text-primary transition-colors duration-300 cursor-pointer"
                 onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+                aria-label={isMobileMenuOpen ? "Close menu" : "Open menu"}
+                aria-expanded={isMobileMenuOpen}
               >
                 {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
               </button>
@@ -134,26 +152,45 @@ const Navbar = () => {
                 <li key={link.name}>
                   <button
                     onClick={() => handleNavClick(link.href)}
-                    className="text-cream text-lg font-medium tracking-wide hover:text-primary transition-colors duration-300 block py-2 w-full text-left"
+                    className="text-cream text-lg font-medium tracking-wide hover:text-primary transition-colors duration-300 block py-2 w-full text-left cursor-pointer"
                   >
                     {link.name}
                   </button>
                 </li>
               ))}
+              <li>
+                <Link
+                  to="/products?category=jewelry"
+                  className="text-cream text-lg font-medium tracking-wide hover:text-primary transition-colors duration-300 block py-2 w-full text-left cursor-pointer"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Shop All
+                </Link>
+              </li>
               <li className="flex gap-4 pt-4 border-t border-cream/10">
+                <button 
+                  onClick={() => {
+                    setIsMobileMenuOpen(false);
+                    setIsSearchOpen(true);
+                  }}
+                  className="flex items-center gap-2 text-cream hover:text-primary transition-colors cursor-pointer"
+                >
+                  <Search className="w-5 h-5" />
+                  Search
+                </button>
                 <button 
                   onClick={() => {
                     setIsMobileMenuOpen(false);
                     setIsWishlistOpen(true);
                   }}
-                  className="flex items-center gap-2 text-cream hover:text-primary transition-colors"
+                  className="flex items-center gap-2 text-cream hover:text-primary transition-colors cursor-pointer"
                 >
                   <Heart className={cn("w-5 h-5", wishlistCount > 0 && "fill-accent text-accent")} />
                   Wishlist ({wishlistCount})
                 </button>
               </li>
               <li className="pt-2">
-                <Button variant="gold" className="w-full" onClick={() => handleNavClick("#custom")}>
+                <Button variant="gold" className="w-full cursor-pointer" onClick={() => handleNavClick("#custom")}>
                   Book Consultation
                 </Button>
               </li>
